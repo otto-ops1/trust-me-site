@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trust me</title>
+  <style>
+    * { margin: 0; box-sizing: border-box; }
+    body {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 25px;
+      background: #000;
+      color: #00ff66;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      overflow: hidden;
+    }
+    h1 {
+      font-size: clamp(28px, 8vw, 48px);
+      text-shadow: 0 0 20px #00ff66;
+    }
+    p { opacity: .75; max-width: 320px; }
+    button {
+      padding: 18px 42px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #000;
+      background: #00ff66;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 0 30px #00ff66;
+      transition: transform .15s ease;
+    }
+    button:hover { transform: scale(1.05); }
+    #screamer {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+      color: #ff2222;
+      font-size: clamp(40px, 12vw, 100px);
+      font-weight: 900;
+      text-align: center;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tu me fais confiance ?</h1>
+  <p>Appuie sur le bouton… mais réfléchis bien avant.</p>
+  <button id="trustBtn">Trust me</button>
+
+  <div id="screamer">TU AS ÉTÉ PIÉGÉ !</div>
+
+  <script>
+    const bouton = document.getElementById("trustBtn");
+    const screamer = document.getElementById("screamer");
+
+    function jouerSon() {
+      const context = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillateur = context.createOscillator();
+      const gain = context.createGain();
+
+      oscillateur.type = "sawtooth";
+      oscillateur.frequency.setValueAtTime(900, context.currentTime);
+      oscillateur.frequency.exponentialRampToValueAtTime(70, context.currentTime + 0.8);
+
+      gain.gain.setValueAtTime(0.35, context.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.9);
+
+      oscillateur.connect(gain);
+      gain.connect(context.destination);
+      oscillateur.start();
+      oscillateur.stop(context.currentTime + 0.9);
+    }
+
+    bouton.addEventListener("click", () => {
+      screamer.style.display = "flex";
+      jouerSon();
+
+      setTimeout(() => {
+        screamer.style.display = "none";
+      }, 2500);
+    });
+  </script>
+</body>
+</html>
